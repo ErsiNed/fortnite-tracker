@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow p-4" style="max-width: 500px; width: 100%;">
+      <h2 class="mb-3 text-center text-danger">Delete Profile</h2>
+      <p class="text-danger fs-5 text-center">
+        <strong>Warning:</strong> This action cannot be undone. Your account and data will be permanently deleted.
+      </p>
+
+      <form method="post" class="d-flex justify-content-center gap-3 mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger px-4">Yes, Delete My Account</button>
+        <a href="{% url 'profile' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+      </form>
+    </div>
+  </div>
+{% endblock %}

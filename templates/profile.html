@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow p-4 w-100" style="max-width: 700px;">
+      <h2 class="mb-4 text-center">Your Profile</h2>
+      <hr>
+
+      <div class="row align-items-center">
+        <div class="col-md-4 text-center mb-3 mb-md-0">
+          {% if profile and profile.avatar %}
+            <img src="{{ profile.avatar.url }}" class="img-fluid rounded-circle border mb-3"
+                 alt="Avatar" style="max-height: 180px;">
+          {% else %}
+            <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
+                 style="width: 180px; height: 180px;">
+              <span>No Avatar</span>
+            </div>
+          {% endif %}
+
+          <a href="{% url 'edit_profile' %}" class="btn btn-primary w-100 mb-2">Edit Profile</a>
+          <a href="{% url 'delete_profile' %}" class="btn btn-outline-danger w-100">Delete Profile</a>
+        </div>
+
+        <div class="col-md-8">
+          <p><strong>Username:</strong> {{ user.username }}</p>
+          <p><strong>Epic Games Username:</strong> {{ user.epic_games_username|default:"—" }}</p>
+          <p><strong>Platform:</strong> {{ user.get_platform_display|default:"—" }}</p>
+          <p><strong>V-Bucks Balance:</strong> {{ user.vbucks_balance }}</p>
+          <p><strong>Total Money Spent:</strong> {{ user.total_money_spent|floatformat:2 }} BGN</p>
+          <p><strong>V-Bucks Earned:</strong> {{ user.total_vbucks_earned }}</p>
+          <p><strong>V-Bucks Spent:</strong> {{ user.total_vbucks_spent }}</p>
+          {% if profile and profile.last_vbucks_purchase %}
+            <p><strong>Last V-Bucks Purchase:</strong> {{ profile.last_vbucks_purchase }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

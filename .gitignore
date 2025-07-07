@@ -1,0 +1,27 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+
+# Env
+.env
+.venv/
+venv/
+
+# SQLite DB
+db.sqlite3
+
+# Media files (uploads)
+media/
+
+# Django migrations
+**/migrations/
+!**/migrations/__init__.py
+
+# PyCharm
+.idea/
+
+# OS files
+.DS_Store
