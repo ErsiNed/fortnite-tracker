@@ -3,17 +3,136 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-4">
   {% if user.is_authenticated %}
-    <div class="text-center">
-      <h2 class="mb-4">Welcome, {{ user.username }}!</h2>
-      <a href="{% url 'vbucks_tracker:transaction-list' %}" class="btn btn-primary btn-lg">Go to Your Wallet</a>
+    <div class="text-center mb-5">
+      <h2>Welcome back, {{ user.username }}!</h2>
+      <p class="lead text-muted">Your Fortnite financial overview</p>
     </div>
+
+    <div class="row g-4">
+      <!-- Quick Stats -->
+      <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Quick Stats</h5>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <!-- Real Money -->
+              <div class="col-6 mb-3">
+                <a href="{% url 'vbucks_tracker:transaction-list' %}" class="text-decoration-none">
+                  <div class="p-3 border rounded bg-light hover-effect">
+                    <h6 class="text-muted">Real Money</h6>
+                    <h4>{{ total_real_money|default:"0" }} {{ user_currency|default:"BGN" }}</h4>
+                  </div>
+                </a>
+              </div>
+
+              <!-- V-Bucks Earnings -->
+              <div class="col-6 mb-3">
+                <a href="{% url 'vbucks_tracker:vbucksearning-list' %}" class="text-decoration-none">
+                  <div class="p-3 border rounded bg-light hover-effect">
+                    <h6 class="text-muted">Total Earned</h6>
+                    <h4>{{ total_earned|default:"0" }} V-Bucks</h4>
+                  </div>
+                </a>
+              </div>
+
+              <!-- V-Bucks Spendings -->
+              <div class="col-6 mb-3">
+                <a href="{% url 'vbucks_tracker:vbucks-spending-list' %}" class="text-decoration-none">
+                  <div class="p-3 border rounded bg-light hover-effect">
+                    <h6 class="text-muted">Total Spent</h6>
+                    <h4>{{ total_spent|default:"0" }} V-Bucks</h4>
+                  </div>
+                </a>
+              </div>
+
+              <!-- Refunds -->
+              <div class="col-6 mb-3">
+                <a href="{% url 'vbucks_tracker:refund-list' %}" class="text-decoration-none">
+                  <div class="p-3 border rounded bg-light hover-effect">
+                    <h6 class="text-muted">Refunds</h6>
+                    <h4>{{ total_refunds|default:"0" }} V-Bucks</h4>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Quick Actions</h5>
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <a href="{% url 'vbucks_tracker:transaction-create' %}" class="btn btn-outline-primary btn-lg mb-3 py-3">
+              <i class="bi bi-cash-stack"></i> Add Money Transaction
+            </a>
+
+            <a href="{% url 'vbucks_tracker:vbucksearning-create' %}" class="btn btn-outline-success btn-lg mb-3 py-3">
+              <i class="bi bi-coin"></i> Add V-Bucks Earning
+            </a>
+
+            <a href="{% url 'vbucks_tracker:vbucks-spending-create' %}" class="btn btn-outline-danger btn-lg mb-3 py-3">
+              <i class="bi bi-cart"></i> Add V-Bucks Spending
+            </a>
+
+            <a href="{% url 'vbucks_tracker:refund-create' %}" class="btn btn-outline-warning btn-lg py-3">
+              <i class="bi bi-arrow-counterclockwise"></i> Request Refund
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+<!-- V-Bucks Balance Card -->
+<div class="col-12">
+  <div class="card shadow-sm mt-4 border-success" style="border-width: 1px; max-height: 180px;">
+    <div class="card-body p-3 d-flex align-items-center justify-content-around">
+      <div class="text-center">
+        <i class="bi bi-coin fs-1 text-warning"></i>
+      </div>
+      <div class="text-center mx-4">
+        <h5 class="text-muted mb-1">AVAILABLE BALANCE</h5>
+        <h2 class="text-success mb-0">{{ vbucks_balance|default:"0" }}</h2>
+        <small class="text-muted">V-Bucks</small>
+      </div>
+      <div class="text-center">
+        <i class="bi bi-wallet2 fs-1 text-success"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
   {% else %}
-    <div class="text-center">
-      <h2 class="mb-3">Welcome to Fortnite Wallet Tracker</h2>
-      <p class="lead">Track your V-Bucks spending, earnings, and more.</p>
+    <div class="text-center py-5">
+      <h1 class="display-4 mb-4">Fortnite Wallet Tracker</h1>
+      <p class="lead mb-5">Track your V-Bucks spending, earnings, and manage your in-game finances</p>
+      <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 gap-3">Login</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-4">Register</a>
+      </div>
     </div>
   {% endif %}
 </div>
+
+<style>
+  .hover-effect:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 {% endblock %}

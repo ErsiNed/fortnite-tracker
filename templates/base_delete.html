@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="p-4 border rounded bg-light shadow-sm text-center">
+      <h2 class="mb-4 text-danger">{{ title }}</h2>
+
+      <p class="mb-4">{{ message }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger me-2">{{ confirm_button }}</button>
+        <a href="{{ cancel_url }}" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

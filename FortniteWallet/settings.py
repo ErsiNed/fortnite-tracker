@@ -25,16 +25,14 @@ SECRET_KEY = 'django-insecure-pf!vt=rg(eru1spathg5&qt88@4&lp^v4x6)q3rq--^k&*rr3f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Add these when DEBUG = False
+# SECURE_HSTS_SECONDS = 2592000  # 30 days
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+
 ALLOWED_HOSTS = []
-
-AUTH_USER_MODEL = 'accounts.User'
-
-LOGIN_REDIRECT_URL = 'profile'
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = 'login'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Application definition
 PROJECT_APPS = [
@@ -49,6 +47,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ] + PROJECT_APPS
+
+# Auth settings
+AUTH_USER_MODEL = 'accounts.User'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'profile'
+LOGOUT_REDIRECT_URL = 'vbucks_tracker:home'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Static files
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,8 +137,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

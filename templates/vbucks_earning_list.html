@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10 col-lg-8">
+    <div class="p-4 border rounded bg-light shadow-sm">
+      <h2 class="mb-4 text-center">My V-Bucks Earnings</h2>
+
+      {% if earnings %}
+        <div class="text-end mb-3">
+          <a href="{% url 'vbucks_tracker:vbucksearning-create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add Earning
+          </a>
+        </div>
+        
+        <div class="list-group">
+          {% for earning in earnings %}
+            <div class="list-group-item {% if earning.type == 'QUEST' %}list-group-item-info{% endif %}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="d-flex align-items-center mb-1">
+                    <strong class="me-2">{{ earning.get_type_display }}</strong>
+                    <span class="badge {% if earning.type == 'QUEST' %}bg-info{% else %}bg-primary{% endif %} rounded-pill">
+                      +{{ earning.amount }} V-Bucks
+                    </span>
+                  </div>
+                  
+                  <div class="d-flex">
+                    <span class="text-muted me-3">
+                      <i class="bi bi-calendar"></i> {{ earning.date }}
+                    </span>
+                    {% if earning.earning_name %}
+                      <span class="text-muted">
+                        <i class="bi bi-tag"></i> {{ earning.earning_name }}
+                      </span>
+                    {% endif %}
+                  </div>
+                  
+                  {% if earning.type == 'QUEST' %}
+                    <div class="mt-2">
+                      <span class="badge bg-warning text-dark">
+                        <i class="bi bi-arrow-repeat"></i> Quest Pack
+                      </span>
+                    </div>
+                  {% endif %}
+                </div>
+                
+                <div class="btn-group">
+                  <a href="{% url 'vbucks_tracker:vbucksearning-update' earning.pk %}" 
+                     class="btn btn-sm btn-outline-primary"
+                     title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="{% url 'vbucks_tracker:vbucksearning-delete' earning.pk %}" 
+                     class="btn btn-sm btn-outline-danger"
+                     title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-4">
+          <i class="bi bi-wallet2 text-muted" style="font-size: 3rem;"></i>
+          <p class="text-muted mt-3">No earnings recorded yet</p>
+          <a href="{% url 'vbucks_tracker:vbucksearning-create' %}" class="btn btn-success mt-2">
+            <i class="bi bi-plus-circle"></i> Record First Earning
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+{% endblock %}

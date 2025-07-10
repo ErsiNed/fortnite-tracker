@@ -1,40 +1,149 @@
 {% extends 'base.html' %}
 
+{% block title %}Your Profile{% endblock %}
+
 {% block content %}
-  <div class="d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow p-4 w-100" style="max-width: 700px;">
-      <h2 class="mb-4 text-center">Your Profile</h2>
-      <hr>
-
-      <div class="row align-items-center">
-        <div class="col-md-4 text-center mb-3 mb-md-0">
-          {% if profile and profile.avatar %}
-            <img src="{{ profile.avatar.url }}" class="img-fluid rounded-circle border mb-3"
-                 alt="Avatar" style="max-height: 180px;">
-          {% else %}
-            <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center mx-auto mb-3"
-                 style="width: 180px; height: 180px;">
-              <span>No Avatar</span>
-            </div>
-          {% endif %}
-
-          <a href="{% url 'edit_profile' %}" class="btn btn-primary w-100 mb-2">Edit Profile</a>
-          <a href="{% url 'delete_profile' %}" class="btn btn-outline-danger w-100">Delete Profile</a>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0 text-center">Your Profile</h3>
         </div>
-
-        <div class="col-md-8">
-          <p><strong>Username:</strong> {{ user.username }}</p>
-          <p><strong>Epic Games Username:</strong> {{ user.epic_games_username|default:"—" }}</p>
-          <p><strong>Platform:</strong> {{ user.get_platform_display|default:"—" }}</p>
-          <p><strong>V-Bucks Balance:</strong> {{ user.vbucks_balance }}</p>
-          <p><strong>Total Money Spent:</strong> {{ user.total_money_spent|floatformat:2 }} BGN</p>
-          <p><strong>V-Bucks Earned:</strong> {{ user.total_vbucks_earned }}</p>
-          <p><strong>V-Bucks Spent:</strong> {{ user.total_vbucks_spent }}</p>
-          {% if profile and profile.last_vbucks_purchase %}
-            <p><strong>Last V-Bucks Purchase:</strong> {{ profile.last_vbucks_purchase }}</p>
-          {% endif %}
+        <div class="card-body p-4">
+          <div class="row">
+            <!-- Avatar Column -->
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+              <div class="mb-4">
+                {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}" 
+                       class="img-thumbnail rounded-circle shadow-sm" 
+                       alt="Profile Picture"
+                       style="width: 180px; height: 180px; object-fit: cover;">
+                {% else %}
+                  <div class="d-flex align-items-center justify-content-center bg-light rounded-circle shadow-sm mx-auto"
+                       style="width: 180px; height: 180px;">
+                    <i class="bi bi-person-circle fs-1 text-muted"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="d-grid gap-3">
+                <a href="{% url 'edit_profile' %}" class="btn btn-success">
+                  <i class="bi bi-pencil"></i> Edit Profile
+                </a>
+                <a href="{% url 'delete_profile' %}" class="btn btn-outline-danger">
+                  <i class="bi bi-trash"></i> Delete Account
+                </a>
+              </div>
+            </div>
+            
+            <!-- Profile Info Column -->
+            <div class="col-md-8">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                      <h5 class="mb-0">Account Info</h5>
+                    </div>
+                    <div class="card-body">
+                      <p><strong>Username:</strong> {{ user.username }}</p>
+                      <p><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+                      <p><strong>Name:</strong> 
+                        {% if user.first_name or user.last_name %}
+                          {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                          —
+                        {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                      <h5 class="mb-0">Game Info</h5>
+                    </div>
+                    <div class="card-body">
+                      <p><strong>Epic Games:</strong> {{ profile.epic_games_username|default:"—" }}</p>
+                      <p><strong>Platform:</strong> 
+                        {% if profile.platform %}
+                          <i class="bi {{ profile.platform_icon }}"></i> {{ profile.get_platform_display }}
+                        {% else %}
+                          —
+                        {% endif %}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-4">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">V-Bucks Summary</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row text-center g-3">
+                      <div class="col-6 col-md-3">
+                        <a href="#" class="text-decoration-none">
+                          <div class="p-3 border rounded bg-light hover-effect">
+                            <h6 class="text-muted">Balance</h6>
+                            <h4 class="text-success">{{ vbucks_summary.balance }}</h4>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 col-md-3">
+                        <a href="{% url 'vbucks_tracker:vbucksearning-list' %}" class="text-decoration-none">
+                          <div class="p-3 border rounded bg-light hover-effect">
+                            <h6 class="text-muted">Earned</h6>
+                            <h4>{{ vbucks_summary.total_earned }}</h4>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 col-md-3">
+                        <a href="{% url 'vbucks_tracker:vbucks-spending-list' %}" class="text-decoration-none">
+                          <div class="p-3 border rounded bg-light hover-effect">
+                            <h6 class="text-muted">Spent</h6>
+                            <h4 class="text-danger">{{ vbucks_summary.total_spent }}</h4>
+                          </div>
+                        </a>
+                      </div>
+                      <div class="col-6 col-md-3">
+                        <a href="{% url 'vbucks_tracker:refund-list' %}" class="text-decoration-none">
+                          <div class="p-3 border rounded bg-light hover-effect">
+                            <h6 class="text-muted">Refunded</h6>
+                            <h4 class="text-warning">{{ vbucks_summary.total_refunded }}</h4>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<style>
+  .hover-effect:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  .card-header {
+    border-radius: 0.375rem 0.375rem 0 0 !important;
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 {% endblock %}
