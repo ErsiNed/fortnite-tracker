@@ -1,27 +1,29 @@
-# Python
+# Python bytecode
 *.pyc
 __pycache__/
 *.pyo
 *.pyd
 .Python
 
-# Env
+# Virtual environments
 .env
 .venv/
 venv/
 
-# SQLite DB
+# Django database
 db.sqlite3
 
-# Media files (uploads)
+# Media files
 media/
 
-# Django migrations
-**/migrations/
-!**/migrations/__init__.py
+# Django migrations – keep .py files but ignore compiled bytecode
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/*.pyd
 
-# PyCharm
+# IDEs
 .idea/
 
-# OS files
+# macOS system files
 .DS_Store
