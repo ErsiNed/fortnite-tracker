@@ -25,6 +25,7 @@ urlpatterns = [
     # V-Bucks Spendings
     path('vbucks-spendings/', include([
         path('', views.VbucksSpendingListView.as_view(), name='vbucks-spending-list'),
+        path('gifted/', views.gifted_spending_view, name='vbucks-spending-gifted'),
         path('add/', views.VbucksSpendingCreateView.as_view(), name='vbucks-spending-create'),
         path('<int:pk>/edit/', views.VbucksSpendingUpdateView.as_view(), name='vbucks-spending-update'),
         path('<int:pk>/delete/', views.VbucksSpendingDeleteView.as_view(), name='vbucks-spending-delete'),

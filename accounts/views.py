@@ -13,7 +13,7 @@ def register_view(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            UserProfile.objects.create(user=user)
+            UserProfile.objects.get_or_create(user=user)
             login(request, user)
             messages.success(request, "Registration successful!")
             return redirect('profile')
@@ -29,7 +29,7 @@ def register_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-    profile = user.profile
+    profile = UserProfile.objects.get_or_create(user=user)[0]
     vbucks_summary = user.get_vbucks_summary()
 
     return render(request, 'profile.html', {

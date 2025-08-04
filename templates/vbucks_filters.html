@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex align-items-center">
+    <a href="{% url 'vbucks_tracker:vbucks-spending-list' %}"
+       class="btn btn-outline-primary me-2 {% if not selected_category %}active{% endif %}">
+      All Spendings
+    </a>
+
+    <a href="{% url 'vbucks_tracker:vbucks-spending-gifted' %}"
+       class="btn btn-outline-primary me-2 {% if selected_category == 'GIFT' %}active{% endif %}">
+      Gifted Only
+    </a>
+
+    {% if selected_category == 'GIFT' and total_gifted_spent %}
+      <span class="text-muted ms-2">Total Gifted VBucks: <strong>{{ total_gifted_spent }} VBucks</strong></span>
+    {% endif %}
+  </div>
+
+  <a href="{% url 'vbucks_tracker:vbucks-spending-create' %}" class="btn btn-success">
+    <i class="bi bi-plus-circle"></i> Add Spending
+  </a>
+</div>

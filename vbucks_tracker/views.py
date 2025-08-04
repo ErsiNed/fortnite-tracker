@@ -1,4 +1,7 @@
+from asgiref.sync import sync_to_async
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
@@ -150,6 +153,27 @@ class VbucksSpendingListView(BaseListView):
     template_name = 'vbucks_spending_list.html'
     context_object_name = 'spendings'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.GET.get('category')
+        if category:
+            return queryset.filter(category=category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = self.request.GET.get('category')
+
+        if category == 'GIFT':
+            total_gifted_spent = self.get_queryset().filter(category='GIFT') \
+                                     .aggregate(total=Sum('vbucks_spent'))['total'] or 0
+            context.update({
+                'selected_category': 'GIFT',
+                'total_gifted_spent': total_gifted_spent,
+                'show_gifted_total': True,
+            })
+        return context
+
 
 class VbucksSpendingCreateView(BaseCreateView):
     model = VbucksSpending
@@ -200,3 +224,28 @@ class RefundDeleteView(BaseDeleteView):
 
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
+
+
+@login_required
+async def gifted_spending_view(request):
+    user = request.user
+
+    # Async fetch spendings filtered by user and category 'GIFT'
+    spendings = await sync_to_async(
+        lambda: list(
+            VbucksSpending.objects.filter(user=user, category='GIFT')
+            .order_by('-date')
+            .select_related('user')))()
+
+    # Async fetch total gifted spent sum
+    total_gifted_spent = await sync_to_async(
+        lambda: VbucksSpending.objects.filter(user=user, category='GIFT')
+                .aggregate(total=Sum('vbucks_spent'))['total'] or 0)()
+
+    context = {
+        'spendings': spendings,
+        'selected_category': 'GIFT',
+        'total_gifted_spent': total_gifted_spent,
+        'show_gifted_total': True,}
+
+    return render(request, 'vbucks_spending_list.html', context)

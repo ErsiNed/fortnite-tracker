@@ -93,3 +93,18 @@ class RefundForm(forms.ModelForm):
             self.fields['original_purchase'].queryset = (
                 VbucksSpending.objects.filter(user=user, refunded=False)
             )
+
+from django import forms
+
+class GiftedSpendingFilterForm(forms.Form):
+    category = forms.ChoiceField(
+        choices=[
+            ('', 'All Categories'),
+            ('GIFT', 'Gifted Only'),
+        ],
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-select form-select-sm',
+            'onchange': 'this.form.submit()'
+        })
+    )
