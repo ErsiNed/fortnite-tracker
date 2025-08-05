@@ -67,13 +67,13 @@ A Django web application that helps you track your Fortnite V-Bucks purchases, e
    - User and UserProfile models
    - Vbucks-related models (RealMoneyTransaction, VbucksEarning, VbucksSpending, Refund)
 
-7**Run the development server:**
+7. **Run the development server:**
 
    ```bash
    python manage.py runserver
    ```
 
-8**Open in your browser:**
+8. **Open in your browser:**
 
    ```
    http://127.0.0.1:8000
