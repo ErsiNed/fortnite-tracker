@@ -18,12 +18,22 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from accounts.views import UserListAPIView, UserDetailAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('vbucks_tracker.urls')),
     path('accounts/', include('accounts.urls')),
+
+    # REST API URLs
+    path('api/users/', UserListAPIView.as_view(), name='user-list'),
+    path('api/users/<int:pk>/', UserDetailAPIView.as_view(), name='user-detail'),
+
+    # JWT Token URLs
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 if settings.DEBUG:

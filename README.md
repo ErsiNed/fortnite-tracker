@@ -15,6 +15,19 @@ A Django web application that helps you track your Fortnite V-Bucks purchases, e
 
 ---
 
+## 🌐 API Capabilities
+
+I've implemented complete REST capabilities as standalone endpoints. 
+While the current web interface uses traditional Django templates, the API layer is fully functional 
+and ready for future JavaScript or mobile integration.
+
+**Available Endpoints**:
+- `POST /api/token/` - Get JWT tokens (provide `username`/`password`)
+- `GET /api/users/` - List all users (requires JWT)
+- `GET /api/users/<id>/` - Get user details
+
+---
+
 ## 🛠️ Technologies
 
 - **Python 3.11+** & **Django 4.2**

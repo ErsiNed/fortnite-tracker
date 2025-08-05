@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
+import sys
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,24 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pf!vt=rg(eru1spathg5&qt88@4&lp^v4x6)q3rq--^k&*rr3f'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_DEV_MODE = 'runserver' in sys.argv or 'test' in sys.argv
 
-# Add these when DEBUG = False
-# SECURE_HSTS_SECONDS = 2592000  # 30 days
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SECRET_KEY = os.getenv('SECRET_KEY') or (get_random_secret_key() if IS_DEV_MODE else None)
 
-ALLOWED_HOSTS = []
+DEBUG = os.getenv('DEBUG', str(IS_DEV_MODE)).lower() == 'true'
+
+ALLOWED_HOSTS = [] if DEBUG else [
+    h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',') if h.strip()
+]
+
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', str(not DEBUG)).lower() == 'true'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', str(not DEBUG)).lower() == 'true'
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', 0))
 
 # Application definition
 PROJECT_APPS = [
     'accounts',
     'vbucks_tracker',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,6 +52,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ] + PROJECT_APPS
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 # Auth settings
 AUTH_USER_MODEL = 'accounts.User'

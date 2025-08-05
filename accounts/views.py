@@ -3,9 +3,11 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy
+from rest_framework import generics
 
 from .forms import UserRegisterForm, EditUserForm, EditUserProfileForm
-from .models import UserProfile
+from .models import UserProfile, User
+from .serializers import UserSerializer
 
 
 def register_view(request):
@@ -81,3 +83,11 @@ def delete_profile_view(request):
     return render(request, 'delete_profile.html', {
         'title': 'Delete Account'
     })
+
+class UserListAPIView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetailAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
