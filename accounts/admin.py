@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from .models import User, UserProfile
 
 
@@ -51,16 +49,4 @@ class UserProfileAdmin(admin.ModelAdmin):
     epic_username.short_description = 'Epic ID'
 
 
-def setup_staff_group():
-    """Configure Staff group with limited permissions"""
-    staff, _ = Group.objects.get_or_create(name='Staff')
-    for model in [User, UserProfile]:
-        ct = ContentType.objects.get_for_model(model)
-        staff.permissions.add(*Permission.objects.filter(
-            content_type=ct,
-            codename__in=['view_user', 'change_user', 'view_userprofile', 'change_userprofile']
-        ))
-
-
 admin.site.register(User, CustomUserAdmin)
-setup_staff_group()

@@ -58,14 +58,22 @@ A Django web application that helps you track your Fortnite V-Bucks purchases, e
    ```bash
    python manage.py createsuperuser
    ```
+6. **Set up Staff roles and permissions:**
 
-6. **Run the development server:**
+   ```bash
+   python manage.py setup_staff_role
+   ```
+   *This creates a 'Staff' group with the appropriate view and change permissions for:*
+   - User and UserProfile models
+   - Vbucks-related models (RealMoneyTransaction, VbucksEarning, VbucksSpending, Refund)
+
+7**Run the development server:**
 
    ```bash
    python manage.py runserver
    ```
 
-7. **Open in your browser:**
+8**Open in your browser:**
 
    ```
    http://127.0.0.1:8000

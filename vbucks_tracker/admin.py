@@ -1,7 +1,5 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from .models import RealMoneyTransaction, VbucksEarning, VbucksSpending, Refund
 
 
@@ -19,11 +17,10 @@ class RealMoneyTransactionAdmin(admin.ModelAdmin):
     def transaction_summary(self, obj):
         return f"{obj.get_category_display()}: {obj.source_name}"
 
-    transaction_summary.short_description = "Transaction"
-
     def amount_with_currency(self, obj):
         return f"{obj.amount} {obj.currency}"
 
+    transaction_summary.short_description = "Transaction"
     amount_with_currency.short_description = "Amount"
 
 
@@ -62,23 +59,7 @@ class RefundAdmin(admin.ModelAdmin):
     purchase_link.short_description = "Original Purchase"
 
 
-def setup_staff_permissions():
-    """Configure Staff group with limited permissions"""
-    staff, _ = Group.objects.get_or_create(name='Staff')
-
-    models = [RealMoneyTransaction, VbucksEarning, VbucksSpending, Refund]
-
-    for model in models:
-        content_type = ContentType.objects.get_for_model(model)
-        staff.permissions.add(*Permission.objects.filter(
-            content_type=content_type,
-            codename__in=[f'view_{model._meta.model_name}', f'change_{model._meta.model_name}']
-        ))
-
-
 admin.site.register(RealMoneyTransaction, RealMoneyTransactionAdmin)
 admin.site.register(VbucksEarning, VbucksEarningAdmin)
 admin.site.register(VbucksSpending, VbucksSpendingAdmin)
 admin.site.register(Refund, RefundAdmin)
-
-setup_staff_permissions()
